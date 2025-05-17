@@ -1,18 +1,3 @@
-# ---------------------------------------------------
-# File Name: get_func.py
-# Description: A Pyrogram bot for downloading files from Telegram channels or groups 
-#              and uploading them back to Telegram.
-# Author: Gagan
-# GitHub: https://github.com/devgaganin/
-# Telegram: https://t.me/team_spy_pro
-# YouTube: https://youtube.com/@dev_gagan
-# Created: 2025-01-11
-# Last Modified: 2025-02-01
-# Version: 2.0.5
-# License: MIT License
-# Improved logic handles
-# ---------------------------------------------------
-
 import asyncio
 import time
 import gc
@@ -31,7 +16,7 @@ from pyrogram.enums import MessageMediaType, ParseMode
 from devgagan.core.func import *
 from pyrogram.errors import RPCError
 from pyrogram.types import Message
-from config import MONGO_DB as MONGODB_CONNECTION_STRING, LOG_GROUP, OWNER_ID, STRING, API_ID, API_HASH
+from config import MONGO_DB as MONGODB_CONNECTION_STRING, LOG_GROUP, OWNER_ID, STRING, API_ID, API_HASH, DATABASE_NAME
 from devgagan.core.mongo import db as odb
 from telethon import TelegramClient, events, Button
 from devgagantools import fast_upload
@@ -40,8 +25,8 @@ def thumbnail(sender):
     return f'{sender}.jpg' if os.path.exists(f'{sender}.jpg') else None
 
 # MongoDB database name and collection name
-DB_NAME = "smart_users"
-COLLECTION_NAME = "super_user"
+DB_NAME = DATABASE_NAME
+COLLECTION_NAME = "Telegram_Guy"
 
 VIDEO_EXTENSIONS = ['mp4', 'mov', 'avi', 'mkv', 'flv', 'wmv', 'webm', 'mpg', 'mpeg', '3gp', 'ts', 'm4v', 'f4v', 'vob']
 DOCUMENT_EXTENSIONS = ['pdf', 'docs']
@@ -52,7 +37,7 @@ collection = db[COLLECTION_NAME]
 
 if STRING:
     from devgagan import pro
-    print("App imported from devgagan.")
+    print("App imported from plugin.")
 else:
     pro = None
     print("STRING is not available. 'app' is set to None.")
