@@ -160,7 +160,6 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                 thumb=thumb_path
             )
 
-    os.remove(file)
     except Exception as e:
         await app.send_message(LOG_GROUP, f"**Upload Failed:** {str(e)}")
         print(f"Error during media upload: {e}")
@@ -170,6 +169,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
             if os.path.basename(thumb_path) != f"{sender}.jpg":  # Check if the filename is not {sender}.jpg
                 os.remove(thumb_path)
         gc.collect()
+        os.remove(file)
 
 
 async def get_msg(userbot, sender, edit_id, msg_link, i, message):
