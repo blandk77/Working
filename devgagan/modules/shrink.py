@@ -1,18 +1,3 @@
- 
-# ---------------------------------------------------
-# File Name: shrink.py
-# Description: A Pyrogram bot for downloading files from Telegram channels or groups 
-#              and uploading them back to Telegram.
-# Author: Gagan
-# GitHub: https://github.com/devgaganin/
-# Telegram: https://t.me/team_spy_pro
-# YouTube: https://youtube.com/@dev_gagan
-# Created: 2025-01-11
-# Last Modified: 2025-01-11
-# Version: 2.0.5
-# License: MIT License
-# ---------------------------------------------------
-
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import random
@@ -23,7 +8,7 @@ from devgagan import app
 from devgagan.core.func import *
 from datetime import datetime, timedelta
 from motor.motor_asyncio import AsyncIOMotorClient
-from config import MONGO_DB, WEBSITE_URL, AD_API, LOG_GROUP  
+from config import MONGO_DB, WEBSITE_URL, AD_API, LOG_GROUP, UPDATES, OWNER
  
  
 tclient = AsyncIOMotorClient(MONGO_DB)
@@ -74,8 +59,8 @@ async def token_handler(client, message):
     user_id = message.chat.id
     if len(message.command) <= 1:
         image_url = "https://i.postimg.cc/v8q8kGyz/startimg-1.jpg"
-        join_button = InlineKeyboardButton("Join Channel", url="https://t.me/team_spy_pro")
-        premium = InlineKeyboardButton("Get Premium", url="https://t.me/kingofpatal")   
+        join_button = InlineKeyboardButton("Join Channel", url=f"https://t.me/{UPDATES}")
+        premium = InlineKeyboardButton("Get Premium", url=f"https://t.me/{OWNER}")   
         keyboard = InlineKeyboardMarkup([
             [join_button],   
             [premium]    
