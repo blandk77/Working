@@ -1,17 +1,3 @@
-# ---------------------------------------------------
-# File Name: plans.py
-# Description: A Pyrogram bot for downloading files from Telegram channels or groups 
-#              and uploading them back to Telegram.
-# Author: Gagan
-# GitHub: https://github.com/devgaganin/
-# Telegram: https://t.me/team_spy_pro
-# YouTube: https://youtube.com/@dev_gagan
-# Created: 2025-01-11
-# Last Modified: 2025-01-11
-# Version: 2.0.5
-# License: MIT License
-# ---------------------------------------------------
-
 from datetime import timedelta
 import pytz
 import datetime, time
@@ -159,7 +145,7 @@ async def transfer_premium(client, message):
                 f"👤 **From:** {sender_user.mention}\n"
                 f"👤 **To:** {new_user.mention}\n"
                 f"⏳ **Expiry Date:** {expiry_str_in_ist}\n\n"
-                f"__Powered by Team SPY__ 🚀"
+                f"{sender_user.mention} has lost premium access now and {new_user.mention} got premium access"
             )
             
             # Notification to the new user
