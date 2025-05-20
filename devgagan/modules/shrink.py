@@ -58,7 +58,7 @@ async def token_handler(client, message):
     msg = await app.get_messages(chat_id, 796)
     user_id = message.chat.id
     if len(message.command) <= 1:
-        image_url = "https://i.postimg.cc/v8q8kGyz/startimg-1.jpg"
+        image_url = "https://files.catbox.moe/er033v.jpg"
         join_button = InlineKeyboardButton("Join Channel", url=f"https://t.me/{UPDATES}")
         premium = InlineKeyboardButton("Get Premium", url=f"https://t.me/{OWNER}")   
         keyboard = InlineKeyboardMarkup([
@@ -69,9 +69,7 @@ async def token_handler(client, message):
         await message.reply_photo(
             msg.photo.file_id,
             caption=(
-                "Hi 👋 Welcome, Wanna intro...?\n\n"
-                "✳️ I can save posts from channels or groups where forwarding is off. I can download videos/audio from YT, INSTA, ... social platforms\n"
-                "✳️ Simply send the post link of a public channel. For private channels, do /login. Send /help to know more."
+                "𝑯𝒆𝒚!...... \n\n📌 𝑾𝒂𝒏𝒏𝒂 𝒌𝒏𝒐𝒘 𝒂𝒃𝒐𝒖𝒕 𝒎𝒆? 𝑰𝒎 𝒂𝒏 𝒂𝒅𝒗𝒂𝒏𝒄𝒆 𝒓𝒆𝒔𝒕𝒓𝒊𝒄𝒕𝒆𝒅 𝑪𝒐𝒏𝒕𝒆𝒏𝒕 𝑺𝒂𝒗𝒆𝒓 𝒃𝒐𝒕 𝒘𝒊𝒕𝒉 𝒂 𝒇𝒂𝒔𝒕 𝒔𝒑𝒆𝒆𝒅!\n📌 𝑾𝒂𝒏𝒏𝒂 𝒌𝒏𝒐𝒘 𝒂𝒃𝒐𝒖𝒕 𝒎𝒚 𝒄𝒐𝒎𝒎𝒂𝒏𝒅𝒔? 𝑼𝒔𝒆 /help 𝒕𝒐 𝒇𝒊𝒏𝒅 𝒕𝒉𝒆𝒎 𝒐𝒖𝒕!"
             ),
             reply_markup=keyboard
         )
@@ -126,7 +124,7 @@ async def smart_handler(client, message):
  
          
         button = InlineKeyboardMarkup(
-            [[InlineKeyboardButton("Verify the token now...", url=shortened_url)]]
+            [[InlineKeyboardButton("Verify", url=shortened_url)]]
         )
         await message.reply("Click the button below to verify your free access token: \n\n> What will you get ? \n1. No time bound upto 3 hours \n2. Batch command limit will be FreeLimit + 20 \n3. All functions unlocked", reply_markup=button)
  
