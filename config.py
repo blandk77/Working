@@ -33,6 +33,9 @@ PREMIUM_LIMIT = int(getenv("PREMIUM_LIMIT", "500"))
 WEBSITE_URL = getenv("WEBSITE_URL", "")
 AD_API = getenv("AD_API", "")
 
+#Pic for settings 
+SET_PIC = getenv("SET_PIC", "")
+
 #Nothing to fill here
 INST_COOKIES = """
 # wtite up here insta cookies
