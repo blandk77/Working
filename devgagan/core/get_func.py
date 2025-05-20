@@ -16,7 +16,7 @@ from pyrogram.enums import MessageMediaType, ParseMode
 from devgagan.core.func import *
 from pyrogram.errors import RPCError
 from pyrogram.types import Message
-from config import MONGO_DB as MONGODB_CONNECTION_STRING, LOG_GROUP, OWNER_ID, STRING, API_ID, API_HASH, DATABASE_NAME
+from config import MONGO_DB as MONGODB_CONNECTION_STRING, LOG_GROUP, OWNER_ID, STRING, API_ID, API_HASH, DATABASE_NAME, SET_PIC, OWNER, UPDATES
 from devgagan.core.mongo import db as odb
 from telethon import TelegramClient, events, Button
 from devgagantools import fast_upload
@@ -194,7 +194,7 @@ async def get_msg(userbot, sender, edit_id, msg_link, i, message):
             if chat in saved_channel_ids:
                 await app.edit_message_text(
                     message.chat.id, edit_id,
-                    "Sorry! This channel is protected by **__Team SPY__**."
+                    "Sorry! This channel is protected, So i can't download from this channel"
                 )
                 return
             
@@ -345,9 +345,9 @@ async def get_media_filename(msg):
     if msg.document:
         return msg.document.file_name
     if msg.video:
-        return msg.video.file_name if msg.video.file_name else "temp.mp4"
+        return msg.video.file_name if msg.video.file_name else "unknown.mp4"
     if msg.photo:
-        return "temp.jpg"
+        return "unknown.jpg"
     return "unknown_file"
 
 def get_message_file_size(msg):
@@ -574,7 +574,7 @@ user_caption_preferences = {}
 async def set_rename_command(user_id, custom_rename_tag):
     user_rename_preferences[str(user_id)] = custom_rename_tag
 
-get_user_rename_preference = lambda user_id: user_rename_preferences.get(str(user_id), 'Team SPY')
+get_user_rename_preference = lambda user_id: user_rename_preferences.get(str(user_id), 'Telegram Guy')
 
 async def set_caption_command(user_id, custom_caption):
     user_caption_preferences[str(user_id)] = custom_caption
@@ -585,8 +585,7 @@ get_user_caption_preference = lambda user_id: user_caption_preferences.get(str(u
 
 sessions = {}
 m = None
-SET_PIC = "settings.jpg"
-MESS = "Customize by your end and Configure your settings ..."
+MESS = "Customize by your end and Configure your personal settings for the bot..."
 
 @gf.on(events.NewMessage(incoming=True, pattern='/settings'))
 async def settings_command(event):
@@ -597,14 +596,13 @@ async def send_settings_message(chat_id, user_id):
     
     # Define the rest of the buttons
     buttons = [
-        [Button.inline("Set Chat ID", b'setchat'), Button.inline("Set Rename Tag", b'setrename')],
-        [Button.inline("Caption", b'setcaption'), Button.inline("Replace Words", b'setreplacement')],
-        [Button.inline("Remove Words", b'delete'), Button.inline("Reset", b'reset')],
+        [Button.inline("Set Dump ID", b'setchat'), Button.inline("Set Rename Tag", b'setrename')],
+        [Button.inline("Custom Caption", b'setcaption'), Button.inline("Replace Words", b'setreplacement')],
+        [Button.inline("Remove Words", b'delete'), Button.inline("Upload Method", b'uploadmethod')],
         [Button.inline("Session Login", b'addsession'), Button.inline("Logout", b'logout')],
         [Button.inline("Set Thumbnail", b'setthumb'), Button.inline("Remove Thumbnail", b'remthumb')],
         [Button.inline("PDF Wtmrk", b'pdfwt'), Button.inline("Video Wtmrk", b'watermark')],
-        [Button.inline("Upload Method", b'uploadmethod')],  # Include the dynamic Fast DL button
-        [Button.url("Report Errors", "https://t.me/team_spy_pro")]
+        [Button.inline("Reset Saved settings", b'reset')]
     ]
 
     await gf.send_file(
@@ -671,7 +669,7 @@ async def callback_query_handler(event):
         # Display the buttons for selecting the upload method
         buttons = [
             [Button.inline(f"Pyrogram v2{pyrogram_check}", b'pyrogram')],
-            [Button.inline(f"SpyLib v1 ⚡{telethon_check}", b'telethon')]
+            [Button.inline(f"Telethon v1 ⚡{telethon_check}", b'telethon')]
         ]
         await event.edit("Choose your preferred upload method:\n\n__**Note:** **SpyLib ⚡**, built on Telethon(base), by Team SPY still in beta.__", buttons=buttons)
 
@@ -681,7 +679,7 @@ async def callback_query_handler(event):
 
     elif event.data == b'telethon':
         save_user_upload_method(user_id, "Telethon")
-        await event.edit("Upload method set to **SpyLib ⚡\n\nThanks for choosing this library as it will help me to analyze the error raise issues on github.** ✅")        
+        await event.edit("Upload method set to **Telethon aka spylib ⚡\n\nThanks for choosing this library as it will help me to analyze the error** ✅")        
         
     elif event.data == b'reset':
         try:
@@ -884,7 +882,7 @@ async def handle_large_file(file, sender, edit, caption):
         if freecheck == 1:
             reply_markup = InlineKeyboardMarkup(
                 [
-                    [InlineKeyboardButton("💎 Get Premium to Forward", url="https://t.me/kingofpatal")]
+                    [InlineKeyboardButton("💎 Get Premium to Forward", url=f"https://t.me/{OWNER}")]
                 ]
             )
             await app.copy_message(
@@ -1009,7 +1007,7 @@ def progress_callback(done, total, user_id):
     # Format the final output as needed
     final = (
         f"╭──────────────────╮\n"
-        f"│     **__SpyLib ⚡ Uploader__**       \n"
+        f"│     **__Telethon ⚡ Uploader__**       \n"
         f"├──────────\n"
         f"│ {progress_bar}\n\n"
         f"│ **__Progress:__** {percent:.2f}%\n"
@@ -1017,7 +1015,6 @@ def progress_callback(done, total, user_id):
         f"│ **__Speed:__** {speed_mbps:.2f} Mbps\n"
         f"│ **__ETA:__** {remaining_time_min:.2f} min\n"
         f"╰──────────────────╯\n\n"
-        f"**__Powered by Team SPY__**"
     )
     
     # Update tracking variables for the user
@@ -1072,7 +1069,7 @@ def dl_progress_callback(done, total, user_id):
     # Format the final output as needed
     final = (
         f"╭──────────────────╮\n"
-        f"│     **__SpyLib ⚡ Downloader__**       \n"
+        f"│     **__Telethon ⚡ Downloader__**       \n"
         f"├──────────\n"
         f"│ {progress_bar}\n\n"
         f"│ **__Progress:__** {percent:.2f}%\n"
@@ -1080,7 +1077,6 @@ def dl_progress_callback(done, total, user_id):
         f"│ **__Speed:__** {speed_mbps:.2f} Mbps\n"
         f"│ **__ETA:__** {remaining_time_min:.2f} min\n"
         f"╰──────────────────╯\n\n"
-        f"**__Powered by Team SPY__**"
     )
     
     # Update tracking variables for the user
