@@ -4,6 +4,8 @@ import random
 import requests
 import string
 import aiohttp
+import shortz
+import asyncio
 from devgagan import app
 from devgagan.core.func import *
 from datetime import datetime, timedelta
@@ -30,16 +32,14 @@ async def generate_random_param(length=8):
  
  
 async def get_shortened_url(deep_link):
-    api_url = f"https://{WEBSITE_URL}/api?api={AD_API}&url={deep_link}"
- 
-     
-    async with aiohttp.ClientSession() as session:
-        async with session.get(api_url) as response:
-            if response.status == 200:
-                data = await response.json()   
-                if data.get("status") == "success":
-                    return data.get("shortenedUrl")
-    return None
+    shortz_client = shortz.Shortz(api_key=AD_API, api_url=f"https://{WEBSITE_URL}/api")
+    
+    try:
+        shortened_url = await shortz_client.shorten(deep_link)
+        return shortened_url
+    except shortz.ShortzError as e:
+        print(f"An error occurred while shortening the URL: {e}")
+        return None
  
  
 async def is_user_verified(user_id):
