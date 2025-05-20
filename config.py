@@ -14,6 +14,13 @@ DATABASE_NAME = getenv("DATABASE_NAME", "Demo")
 LOG_GROUP = getenv("LOG_GROUP", "-1002288135729")
 CHANNEL_ID = int(getenv("CHANNEL_ID", "-1002226481922"))
 
+#Usernames
+OWNER = getenv("OWNER", "Itsme123i")
+UPDATES = getenv("UPDATES", "the_tgguy")
+
+#PLAN PRICES 
+PLAN_USD = int(getenv("PLAN_USD", "3.4"))
+PLAN_INR = int(getenv("PLAN_INR", "200"))
 # Optional...
 
 #Session string 
