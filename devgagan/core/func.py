@@ -1,7 +1,7 @@
-import math
+import math, shutil
 import time , re
 from pyrogram import enums
-from config import CHANNEL_ID, OWNER_ID 
+from config import CHANNEL_ID, OWNER_ID, OWNER, UPDATES, REMOVE_THUMB
 from devgagan.core.mongo.plans_db import premium_users
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import cv2
@@ -32,7 +32,7 @@ async def subscribe(app, message):
         await message.reply_photo(photo="https://files.catbox.moe/uhdylt.jpg",caption=caption, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Join Now...", url=f"{url}")]]))
         return 1
       except Exception:
-         await message.reply_text("**Something Went Wrong. Try again... if Problem persists, contact** _@{OWNER}_")
+         await message.reply_text(f"**Something Went Wrong. Try again... if Problem persists, contact** _@{OWNER}_")
          return 1
 async def get_seconds(time_string):
     def extract_value_and_unit(ts):
@@ -189,34 +189,38 @@ def video_metadata(file):
 def hhmmss(seconds):
     return time.strftime('%H:%M:%S',time.gmtime(seconds))
 
-async def screenshot(video, duration, sender):
-    if os.path.exists(f'{sender}.jpg'):
-        return f'{sender}.jpg'
-    time_stamp = hhmmss(int(duration)/2)
-    out = dt.now().isoformat("_", "seconds") + ".jpg"
-    cmd = ["ffmpeg",
-           "-ss",
-           f"{time_stamp}", 
-           "-i",
-           f"{video}",
-           "-frames:v",
-           "1", 
-           f"{out}",
-           "-y"
-          ]
-    process = await asyncio.create_subprocess_exec(
-        *cmd,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE
-    )
-    stdout, stderr = await process.communicate()
-    x = stderr.decode().strip()
-    y = stdout.decode().strip()
-    if os.path.isfile(out):
-        return out
+async def screenshot(video, duration, sender, RANDOM_THUMB):
+    if REMOVE_THUMB:
+        if os.path.exists(f'{sender}.jpg'):
+            return f'{sender}.jpg'
+        time_stamp = hhmmss(int(duration) / 2)
+        out = dt.now().isoformat("_", "seconds") + ".jpg"
+        cmd = [
+            "ffmpeg",
+            "-ss", f"{time_stamp}",
+            "-i", f"{video}",
+            "-frames:v", "1",
+            f"{out}",
+            "-y"
+        ]
+        process = await asyncio.create_subprocess_exec(
+            *cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE
+        )
+        stdout, stderr = await process.communicate()
+        if os.path.isfile(out):
+            return out
+        else:
+            return None
     else:
-        None  
-last_update_time = time.time()
+        if os.path.exists(f"{video}"):
+            out = f"{sender}.jpg"
+            shutil.copy(video, out)
+            return out
+        else:
+            return None
+
 async def progress_callback(current, total, progress_message):
     percent = (current / total) * 100
     global last_update_time
