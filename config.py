@@ -19,8 +19,9 @@ OWNER = getenv("OWNER", "Itsme123i")
 UPDATES = getenv("UPDATES", "the_tgguy")
 
 #PLAN PRICES 
-PLAN_USD = int(getenv("PLAN_USD", "3.4"))
+PLAN_USD = int(getenv("PLAN_USD", "3"))
 PLAN_INR = int(getenv("PLAN_INR", "200"))
+REMOVE_THUMB = False
 # Optional...
 
 #Session string 
