@@ -4,13 +4,13 @@ import random
 import requests
 import string
 import aiohttp
-import shortz
 import asyncio
 from devgagan import app
 from devgagan.core.func import *
 from datetime import datetime, timedelta
 from motor.motor_asyncio import AsyncIOMotorClient
 from config import MONGO_DB, WEBSITE_URL, AD_API, LOG_GROUP, UPDATES, OWNER
+from shortzy import Shortzy
  
  
 tclient = AsyncIOMotorClient(MONGO_DB)
@@ -32,15 +32,9 @@ async def generate_random_param(length=8):
  
  
 async def get_shortened_url(deep_link):
-    shortz_client = shortz.Shortz(api_key=AD_API, api_url=f"https://{WEBSITE_URL}/api")
-    
-    try:
-        shortened_url = await shortz_client.shorten(deep_link)
-        return shortened_url
-    except shortz.ShortzError as e:
-        print(f"An error occurred while shortening the URL: {e}")
-        return None
- 
+    shortzy = Shortzy(api_key=AD_API, base_site=WEBSITE_URL)
+    shortened_url = await shortzy.convert(deep_link)
+    return shortened_url    
  
 async def is_user_verified(user_id):
     """Check if a user has an active session."""
