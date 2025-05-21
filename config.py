@@ -31,11 +31,11 @@ FREEMIUM_LIMIT = int(getenv("FREEMIUM_LIMIT", "100"))
 PREMIUM_LIMIT = int(getenv("PREMIUM_LIMIT", "500"))
 
 # Shortener
-WEBSITE_URL = getenv("WEBSITE_URL", "")
-AD_API = getenv("AD_API", "")
+WEBSITE_URL = getenv("WEBSITE_URL", "linkmonetizer.in")
+AD_API = getenv("AD_API", "bf35b33b841943cdce510413393f35a9ff0bb558")
 
 #Pic for settings 
-SET_PIC = getenv("SET_PIC", "")
+SET_PIC = getenv("SET_PIC", "https://files.catbox.moe/8ol7bs.jpg")
 
 #Nothing to fill here
 INST_COOKIES = """
