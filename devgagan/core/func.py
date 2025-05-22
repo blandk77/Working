@@ -189,37 +189,25 @@ def video_metadata(file):
 def hhmmss(seconds):
     return time.strftime('%H:%M:%S',time.gmtime(seconds))
 
-async def screenshot(video, duration, sender, RANDOM_THUMB):
-    if REMOVE_THUMB:
-        if os.path.exists(f'{sender}.jpg'):
-            return f'{sender}.jpg'
-        time_stamp = hhmmss(int(duration) / 2)
-        out = dt.now().isoformat("_", "seconds") + ".jpg"
-        cmd = [
-            "ffmpeg",
-            "-ss", f"{time_stamp}",
-            "-i", f"{video}",
-            "-frames:v", "1",
-            f"{out}",
-            "-y"
-        ]
-        process = await asyncio.create_subprocess_exec(
-            *cmd,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE
-        )
-        stdout, stderr = await process.communicate()
-        if os.path.isfile(out):
-            return out
-        else:
+async def screenshot(video, duration, sender, client):
+    thumbnail_path = f'{sender}.jpg'
+    if os.path.exists(thumbnail_path):
+        return thumbnail_path
+    out = datetime.now().isoformat("_", "seconds").replace(":", "_") + ".jpg"
+    try:
+        if not video.thumbs or len(video.thumbs) == 0:
+            await client.send_message(sender, "No thumbnail available for this video.")
             return None
-    else:
-        if os.path.exists(f"{video}"):
-            out = f"{sender}.jpg"
-            shutil.copy(video, out)
-            return out
+        thumbnail = video.thumbs[0]
+        file_path = await client.download_media(thumbnail, file_name=out)
+        if os.path.isfile(file_path):
+            return file_path
         else:
+            await client.send_message(sender, "Failed to download thumbnail.")
             return None
+    except Exception as e:
+        await client.send_message(sender, f"Error extracting thumbnail: {str(e)}")
+        return None
 
 async def progress_callback(current, total, progress_message):
     percent = (current / total) * 100
