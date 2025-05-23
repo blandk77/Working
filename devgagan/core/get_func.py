@@ -62,48 +62,19 @@ async def format_caption_to_html(caption: str) -> str:
     return caption.strip() if caption else None
     
 
-
-async def upload_media(sender, target_chat_id, file, caption, edit, topic_id, msg=None, client=None):
+async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
     try:
-        upload_method = await fetch_upload_method(sender)
+        upload_method = await fetch_upload_method(sender)  # Fetch the upload method (Pyrogram or Telethon)
         metadata = video_metadata(file)
-        width, height, duration = metadata.get('width', 0), metadata.get('height', 0), metadata.get('duration', 0)
-        
-        thumb_path = None
-        client = client or app
-
-        if msg and (msg.video or msg.document):
-            media = msg.video or msg.document
-            thumb_path = f'{sender}.jpg'
-            if os.path.exists(thumb_path):
-                try:
-                    with Image.open(thumb_path) as img:
-                        img.verify()
-                except Exception:
-                    os.remove(thumb_path)
-                    thumb_path = None
-            if not thumb_path and hasattr(media, 'thumbs') and media.thumbs and len(media.thumbs) > 0:
-                out = datetime.now().isoformat("_", "seconds").replace(":", "_") + ".jpg"
-                try:
-                    thumb_path = await client.download_media(media.thumbs[0], file_name=out)
-                    if thumb_path and os.path.isfile(thumb_path):
-                        with Image.open(thumb_path) as img:
-                            img.verify()
-                    else:
-                        thumb_path = None
-                except Exception as e:
-                    await client.send_message(sender, f"Failed to download thumbnail: {str(e)}")
-                    thumb_path = None
-        else:
-            await client.send_message(sender, "No message object provided; skipping thumbnail.")
+        width, height, duration = metadata['width'], metadata['height'], metadata['duration']
 
         video_formats = {'mp4', 'mkv', 'avi', 'mov'}
         document_formats = {'pdf', 'docx', 'txt', 'epub'}
         image_formats = {'jpg', 'png', 'jpeg'}
-        file_ext = file.split('.')[-1].lower()
 
+        # Pyrogram upload
         if upload_method == "Pyrogram":
-            if file_ext in video_formats:
+            if file.split('.')[-1].lower() in video_formats:
                 dm = await app.send_video(
                     chat_id=target_chat_id,
                     video=file,
@@ -118,7 +89,8 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id, ms
                     progress_args=("╭─────────────────────╮\n│      **__Pyro Uploader__**\n├─────────────────────", edit, time.time())
                 )
                 await dm.copy(LOG_GROUP)
-            elif file_ext in image_formats:
+                
+            elif file.split('.')[-1].lower() in image_formats:
                 dm = await app.send_photo(
                     chat_id=target_chat_id,
                     photo=file,
@@ -136,13 +108,14 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id, ms
                     caption=caption,
                     thumb=thumb_path,
                     reply_to_message_id=topic_id,
-                    parse_mode=ParseMode.MARKDOWN,
                     progress=progress_bar,
+                    parse_mode=ParseMode.MARKDOWN,
                     progress_args=("╭─────────────────────╮\n│      **__Pyro Uploader__**\n├─────────────────────", edit, time.time())
                 )
                 await asyncio.sleep(2)
                 await dm.copy(LOG_GROUP)
 
+        # Telethon upload
         elif upload_method == "Telethon":
             await edit.delete()
             progress_message = await gf.send_message(sender, "**__Uploading...__**")
@@ -155,6 +128,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id, ms
                 user_id=sender
             )
             await progress_message.delete()
+
             attributes = [
                 DocumentAttributeVideo(
                     duration=duration,
@@ -162,7 +136,8 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id, ms
                     h=height,
                     supports_streaming=True
                 )
-            ] if file_ext in video_formats else []
+            ] if file.split('.')[-1].lower() in video_formats else []
+
             await gf.send_file(
                 target_chat_id,
                 uploaded,
