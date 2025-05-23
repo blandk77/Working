@@ -1,5 +1,5 @@
 import math, shutil
-import time , re
+import time , re, os
 from pyrogram import enums
 from config import CHANNEL_ID, OWNER_ID, OWNER, UPDATES, REMOVE_THUMB
 from devgagan.core.mongo.plans_db import premium_users
@@ -8,6 +8,26 @@ import cv2
 from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, UserAlreadyParticipant, UserNotParticipant
 from datetime import datetime as dt
 import asyncio, subprocess, re, os, time
+from ffmpeg import probe 
+
+async def extract_original_thumbnail(file_path, sender):
+    if os.path.exists(f'{sender}.jpg'):
+        return f'{sender}.jpg'
+    try:
+        metadata = probe(file_path)
+        streams = metadata.get("streams", [])
+        for stream in streams:
+            if stream.get("codec_type") == "video" and "disposition" in stream:
+                if stream["disposition"].get("attached_pic"):
+                    thumbnail_path = f"{file_path}_thumbnail.jpg"
+                    os.system(f"ffmpeg -i {file_path} -map 0:v -c copy {thumbnail_path}")
+                    if os.path.exists(thumbnail_path):
+                        return thumbnail_path
+        return None
+    except Exception as e:
+        print(f"Error extracting thumbnail: {e}")
+        return None
+        
 async def chk_user(message, user_id):
     user = await premium_users()
     if user_id in user or user_id in OWNER_ID:
