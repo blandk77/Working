@@ -9,25 +9,25 @@ from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, Use
 from datetime import datetime as dt
 import asyncio, subprocess, re, os, time
 
-async def extract_original_thumbnail(file_path, sender):
-    if os.path.exists(f'{sender}.jpg'):
-        return f'{sender}.jpg'
-    try:
-        thumbnail_path = f"{file_path}_thumbnail.jpg"
-        command = [
-            "ffmpeg",
-            "-i", file_path,
-            "-map", "0:v",
-            "-c", "copy",
-            thumbnail_path
-        ]
-        subprocess.run(command, check=True)
-        if os.path.exists(thumbnail_path):
-            return thumbnail_path
-        return None
-    except Exception as e:
-        print(f"Error extracting thumbnail: {e}")
-        return None
+async def download_original_thumbnail(client, message, sender):
+    thumb_path = f"{sender}.jpg"
+    media = None
+
+    if message.video and message.video.thumb:
+        # For videos with a single thumbnail
+        media = message.video.thumb
+    elif message.audio and message.audio.thumb:
+        # For audio files with cover art
+        media = message.audio.thumb
+    elif message.document and message.document.thumb:
+        # For documents with a thumbnail
+        media = message.document.thumb
+
+    if media:
+        await client.download_media(media, file_name=thumb_path)
+        if os.path.exists(thumb_path):
+            return thumb_path
+    return None
         
 async def chk_user(message, user_id):
     user = await premium_users()
