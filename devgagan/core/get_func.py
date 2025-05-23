@@ -68,6 +68,8 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
         metadata = video_metadata(file)
         width, height, duration = metadata['width'], metadata['height'], metadata['duration']
 
+        thumb_path = await extract_original_thumbnail(file)
+
         video_formats = {'mp4', 'mkv', 'avi', 'mov'}
         document_formats = {'pdf', 'docx', 'txt', 'epub'}
         image_formats = {'jpg', 'png', 'jpeg'}
@@ -657,7 +659,7 @@ async def callback_query_handler(event):
         await event.respond('Please send the photo you want to set as the thumbnail.')
     
     elif event.data == b'pdfwt':
-        await event.respond("This feature is not available yet in public repo...")
+        await event.respond("This feature works on some files only currently...")
         return
 
     elif event.data == b'uploadmethod':
@@ -672,7 +674,7 @@ async def callback_query_handler(event):
             [Button.inline(f"Pyrogram v2{pyrogram_check}", b'pyrogram')],
             [Button.inline(f"Telethon v1 ⚡{telethon_check}", b'telethon')]
         ]
-        await event.edit("Choose your preferred upload method:\n\n__**Note:** **SpyLib ⚡**, built on Telethon(base), by Team SPY still in beta.__", buttons=buttons)
+        await event.edit("Choose your preferred upload method:\n\n__**Note:** **Telethon v1⚡**, built on Telethon(base), still in beta.__", buttons=buttons)
 
     elif event.data == b'pyrogram':
         save_user_upload_method(user_id, "Pyrogram")
@@ -680,7 +682,7 @@ async def callback_query_handler(event):
 
     elif event.data == b'telethon':
         save_user_upload_method(user_id, "Telethon")
-        await event.edit("Upload method set to **Telethon aka spylib ⚡\n\nThanks for choosing this library as it will help me to analyze the error** ✅")        
+        await event.edit("Upload method set to **Telethon v1 ⚡\n\nThanks for choosing this library as it will help me to analyze the error** ✅")        
         
     elif event.data == b'reset':
         try:
@@ -842,7 +844,7 @@ async def handle_large_file(file, sender, edit, caption):
     width = metadata['width']
     height = metadata['height']
     try:
-        thumb_path = await screenshot(file, duration, sender)
+        thumb_path = await extract_original_thumbnail(file)
     except Exception:
         thumb_path = None
     try:
