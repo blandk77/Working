@@ -20,6 +20,7 @@ from config import MONGO_DB as MONGODB_CONNECTION_STRING, LOG_GROUP, OWNER_ID, S
 from devgagan.core.mongo import db as odb
 from telethon import TelegramClient, events, Button
 from devgagantools import fast_upload
+from PIL import Image
 
 def thumbnail(sender):
     return f'{sender}.jpg' if os.path.exists(f'{sender}.jpg') else None
@@ -62,23 +63,47 @@ async def format_caption_to_html(caption: str) -> str:
     
 
 
-async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
+async def upload_media(sender, target_chat_id, file, caption, edit, topic_id, msg=None, client=None):
     try:
-        upload_method = await fetch_upload_method(sender)  # Fetch the upload method (Pyrogram or Telethon)
+        upload_method = await fetch_upload_method(sender)
         metadata = video_metadata(file)
-        width, height, duration = metadata['width'], metadata['height'], metadata['duration']
-        try:
-            thumb_path = await screenshot(file, duration, sender)
-        except Exception:
-            thumb_path = None
+        width, height, duration = metadata.get('width', 0), metadata.get('height', 0), metadata.get('duration', 0)
+        
+        thumb_path = None
+        client = client or app
+
+        if msg and (msg.video or msg.document):
+            media = msg.video or msg.document
+            thumb_path = f'{sender}.jpg'
+            if os.path.exists(thumb_path):
+                try:
+                    with Image.open(thumb_path) as img:
+                        img.verify()
+                except Exception:
+                    os.remove(thumb_path)
+                    thumb_path = None
+            if not thumb_path and hasattr(media, 'thumbs') and media.thumbs and len(media.thumbs) > 0:
+                out = datetime.now().isoformat("_", "seconds").replace(":", "_") + ".jpg"
+                try:
+                    thumb_path = await client.download_media(media.thumbs[0], file_name=out)
+                    if thumb_path and os.path.isfile(thumb_path):
+                        with Image.open(thumb_path) as img:
+                            img.verify()
+                    else:
+                        thumb_path = None
+                except Exception as e:
+                    await client.send_message(sender, f"Failed to download thumbnail: {str(e)}")
+                    thumb_path = None
+        else:
+            await client.send_message(sender, "No message object provided; skipping thumbnail.")
 
         video_formats = {'mp4', 'mkv', 'avi', 'mov'}
         document_formats = {'pdf', 'docx', 'txt', 'epub'}
         image_formats = {'jpg', 'png', 'jpeg'}
+        file_ext = file.split('.')[-1].lower()
 
-        # Pyrogram upload
         if upload_method == "Pyrogram":
-            if file.split('.')[-1].lower() in video_formats:
+            if file_ext in video_formats:
                 dm = await app.send_video(
                     chat_id=target_chat_id,
                     video=file,
@@ -93,8 +118,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                     progress_args=("╭─────────────────────╮\n│      **__Pyro Uploader__**\n├─────────────────────", edit, time.time())
                 )
                 await dm.copy(LOG_GROUP)
-                
-            elif file.split('.')[-1].lower() in image_formats:
+            elif file_ext in image_formats:
                 dm = await app.send_photo(
                     chat_id=target_chat_id,
                     photo=file,
@@ -112,14 +136,13 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                     caption=caption,
                     thumb=thumb_path,
                     reply_to_message_id=topic_id,
-                    progress=progress_bar,
                     parse_mode=ParseMode.MARKDOWN,
+                    progress=progress_bar,
                     progress_args=("╭─────────────────────╮\n│      **__Pyro Uploader__**\n├─────────────────────", edit, time.time())
                 )
                 await asyncio.sleep(2)
                 await dm.copy(LOG_GROUP)
 
-        # Telethon upload
         elif upload_method == "Telethon":
             await edit.delete()
             progress_message = await gf.send_message(sender, "**__Uploading...__**")
@@ -132,7 +155,6 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                 user_id=sender
             )
             await progress_message.delete()
-
             attributes = [
                 DocumentAttributeVideo(
                     duration=duration,
@@ -140,8 +162,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                     h=height,
                     supports_streaming=True
                 )
-            ] if file.split('.')[-1].lower() in video_formats else []
-
+            ] if file_ext in video_formats else []
             await gf.send_file(
                 target_chat_id,
                 uploaded,
@@ -165,12 +186,17 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
         print(f"Error during media upload: {e}")
 
     finally:
-        if thumb_path and os.path.exists(thumb_path):
-            if os.path.basename(thumb_path) != f"{sender}.jpg":  # Check if the filename is not {sender}.jpg
+        if thumb_path and os.path.exists(thumb_path) and os.path.basename(thumb_path) != f"{sender}.jpg":
+            try:
                 os.remove(thumb_path)
+            except Exception:
+                pass
+        try:
+            os.remove(file)
+        except Exception:
+            pass
         gc.collect()
-        os.remove(file)
-
+        
 
 async def get_msg(userbot, sender, edit_id, msg_link, i, message):
     try:
