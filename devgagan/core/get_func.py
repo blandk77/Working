@@ -68,7 +68,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
         metadata = video_metadata(file)
         width, height, duration = metadata['width'], metadata['height'], metadata['duration']
 
-        thumb_path = await extract_original_thumbnail(file)
+        thumb_path = await download_original_thumbnail(app, message, sender)
 
         video_formats = {'mp4', 'mkv', 'avi', 'mov'}
         document_formats = {'pdf', 'docx', 'txt', 'epub'}
@@ -844,7 +844,7 @@ async def handle_large_file(file, sender, edit, caption):
     width = metadata['width']
     height = metadata['height']
     try:
-        thumb_path = await extract_original_thumbnail(file)
+        thumb_path = await download_original_thumbnail(app, message, sender)
     except Exception:
         thumb_path = None
     try:
