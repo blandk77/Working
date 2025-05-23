@@ -92,13 +92,12 @@ async def single_link(_, message):
         await msg.edit_text(f"Link: `{link}`\n\n**Error:** {str(e)}")
     finally:
         users_loop[user_id] = False
-        # Avoid deleting the message immediately to ensure error messages persist
-        # await asyncio.sleep(30)  # Optional: Keep message for 30 seconds before deletion
-        # try:
-        #     await msg.delete()
-        # except Exception:
-        #     pass
-
+        await asyncio.sleep(40)
+        try:
+            await msg.delete()
+        except Exception:
+            pass
+        
 async def initialize_userbot(user_id):
     data = await db.get_data(user_id)
     if data and data.get("session"):
