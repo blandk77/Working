@@ -8,7 +8,8 @@ import cv2
 from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, UserAlreadyParticipant, UserNotParticipant
 from datetime import datetime as dt
 import asyncio, subprocess, re, os, time
-from ffmpeg import probe 
+from ffmpeg.probe import probe
+
 
 async def extract_original_thumbnail(file_path, sender):
     if os.path.exists(f'{sender}.jpg'):
