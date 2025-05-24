@@ -68,7 +68,10 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
         metadata = video_metadata(file)
         width, height, duration = metadata['width'], metadata['height'], metadata['duration']
 
-        thumb_path = await download_original_thumbnail(app, message, sender)
+        if os.path.exists(f'{sender}.jpg')
+            thumb_path = f'{sender}.jpg'
+        else 
+            thumb_path = None
 
         video_formats = {'mp4', 'mkv', 'avi', 'mov'}
         document_formats = {'pdf', 'docx', 'txt', 'epub'}
@@ -843,9 +846,9 @@ async def handle_large_file(file, sender, edit, caption):
     duration = metadata['duration']
     width = metadata['width']
     height = metadata['height']
-    try:
-        thumb_path = await download_original_thumbnail(app, message, sender)
-    except Exception:
+    if os.path.exists(f'{sender}.jpg')
+        thumb_path = f'{sender}.jpg'
+    else 
         thumb_path = None
     try:
         if file_extension in VIDEO_EXTENSIONS:
