@@ -80,7 +80,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
         # Pyrogram upload
         if upload_method == "Pyrogram":
             if file.split('.')[-1].lower() in video_formats:
-                if os.path.exists(f'{sender}.jpg')
+                if os.path.exists(f'{sender}.jpg'):
                     thumb_path = f'{sender}.jpg'
                 else 
                     thumb_path = await app.download_media(msg.video.thumbs[0].file_id)
@@ -111,7 +111,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                 )
                 await dm.copy(LOG_GROUP)
             else:
-                if os.path.exists(f'{sender}.jpg')
+                if os.path.exists(f'{sender}.jpg'):
                     thumb_path = f'{sender}.jpg'
                 else
                     thumb_path = await app.download_media(msg.document.thumbs[0].file_id)
@@ -150,7 +150,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                     supports_streaming=True
                 )
             ] if file.split('.')[-1].lower() in video_formats else []
-            if os.path.exists(f'{sender}.jpg')
+            if os.path.exists(f'{sender}.jpg'):
                 thumb_path = f'{sender}.jpg'
             else 
                 try:
@@ -885,7 +885,7 @@ async def handle_large_file(file, sender, edit, caption):
             )
         else:
             # Send as document
-            if os.path.exists(f'{sender}.jpg')
+            if os.path.exists(f'{sender}.jpg'):
                 thumb_path = f'{sender}.jpg'
             else 
                 thumb_path = await pro.download_media(msg.video.thumbs[0].file_id)
