@@ -80,6 +80,10 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
         # Pyrogram upload
         if upload_method == "Pyrogram":
             if file.split('.')[-1].lower() in video_formats:
+                if os.path.exists(f'{sender}.jpg')
+                    thumb_path = f'{sender}.jpg'
+                else 
+                    thumb_path = await app.download_media(msg.video.thumbs[0].file_id)
                 dm = await app.send_video(
                     chat_id=target_chat_id,
                     video=file,
@@ -107,6 +111,10 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                 )
                 await dm.copy(LOG_GROUP)
             else:
+                if os.path.exists(f'{sender}.jpg')
+                    thumb_path = f'{sender}.jpg'
+                else
+                    thumb_path = await app.download_media(msg.document.thumbs[0].file_id)
                 dm = await app.send_document(
                     chat_id=target_chat_id,
                     document=file,
@@ -142,6 +150,13 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                     supports_streaming=True
                 )
             ] if file.split('.')[-1].lower() in video_formats else []
+            if os.path.exists(f'{sender}.jpg')
+                thumb_path = f'{sender}.jpg'
+            else 
+                try:
+                    thumb_path = await app.download_media(msg.document.thumbs[0].file_id)
+                except 
+                    thumb_path = await app.download_media(msg.video.thumbs[0].file_id)
 
             await gf.send_file(
                 target_chat_id,
@@ -846,12 +861,13 @@ async def handle_large_file(file, sender, edit, caption):
     duration = metadata['duration']
     width = metadata['width']
     height = metadata['height']
-    if os.path.exists(f'{sender}.jpg')
-        thumb_path = f'{sender}.jpg'
-    else 
-        thumb_path = None
+
     try:
         if file_extension in VIDEO_EXTENSIONS:
+            if os.path.exists(f'{sender}.jpg')
+                thumb_path = f'{sender}.jpg'
+            else 
+                thumb_path = await pro.download_media(msg.document.thumbs[0].file_id)
             dm = await pro.send_video(
                 LOG_GROUP,
                 video=file,
@@ -869,6 +885,10 @@ async def handle_large_file(file, sender, edit, caption):
             )
         else:
             # Send as document
+            if os.path.exists(f'{sender}.jpg')
+                thumb_path = f'{sender}.jpg'
+            else 
+                thumb_path = await pro.download_media(msg.video.thumbs[0].file_id)
             dm = await pro.send_document(
                 LOG_GROUP,
                 document=file,
