@@ -78,7 +78,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
             if file.split('.')[-1].lower() in video_formats:
                 if os.path.exists(f'{sender}.jpg'):
                     thumb_path = f'{sender}.jpg'
-                else 
+                else:
                     thumb_path = await app.download_media(msg.video.thumbs[0].file_id)
                 dm = await app.send_video(
                     chat_id=target_chat_id,
@@ -109,7 +109,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
             else:
                 if os.path.exists(f'{sender}.jpg'):
                     thumb_path = f'{sender}.jpg'
-                else
+                else:
                     thumb_path = await app.download_media(msg.document.thumbs[0].file_id)
                 dm = await app.send_document(
                     chat_id=target_chat_id,
@@ -148,7 +148,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
             ] if file.split('.')[-1].lower() in video_formats else []
             if os.path.exists(f'{sender}.jpg'):
                 thumb_path = f'{sender}.jpg'
-            else 
+            else: 
                 try:
                     thumb_path = await app.download_media(msg.document.thumbs[0].file_id)
                 except 
@@ -883,7 +883,7 @@ async def handle_large_file(file, sender, edit, caption):
             # Send as document
             if os.path.exists(f'{sender}.jpg'):
                 thumb_path = f'{sender}.jpg'
-            else 
+            else: 
                 thumb_path = await pro.download_media(msg.video.thumbs[0].file_id)
             dm = await pro.send_document(
                 LOG_GROUP,
