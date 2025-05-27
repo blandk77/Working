@@ -863,7 +863,7 @@ async def handle_large_file(file, sender, edit, caption):
         if file_extension in VIDEO_EXTENSIONS:
             if os.path.exists(f'{sender}.jpg'):
                 thumb_path = f'{sender}.jpg'
-            else 
+            else:
                 thumb_path = await pro.download_media(msg.video.thumbs[0].file_id)
             dm = await pro.send_video(
                 LOG_GROUP,
