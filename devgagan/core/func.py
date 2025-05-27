@@ -9,24 +9,26 @@ from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, Use
 from datetime import datetime as dt
 import asyncio, subprocess, re, os, time
 
-async def download_original_thumbnail(client, message, sender):
-    thumb_path = f"{sender}.jpg"
-    media = None
+async def get_thumbnail_path(user_id, msg, app):
+    """
+    Returns the thumbnail path for a given user and message.
+    Checks for a custom thumbnail first; if not found, tries to extract the original video/document thumbnail.
+    Returns None if no thumbnail is available.
+    """
+    custom_thumb_path = f"{user_id}.jpg"
+    if os.path.exists(custom_thumb_path):
+        return custom_thumb_path
 
-    if message.video and message.video.thumb:
-        # For videos with a single thumbnail
-        media = message.video.thumb
-    elif message.audio and message.audio.thumb:
-        # For audio files with cover art
-        media = message.audio.thumb
-    elif message.document and message.document.thumb:
-        # For documents with a thumbnail
-        media = message.document.thumb
+    msg_thumb = None
 
-    if media:
-        await client.download_media(media, file_name=thumb_path)
-        if os.path.exists(thumb_path):
-            return thumb_path
+    # Try to extract thumbnail from video first, then document
+    if hasattr(msg, "video") and getattr(msg.video, "thumbs", None):
+        msg_thumb = msg.video.thumbs[0]
+    elif hasattr(msg, "document") and getattr(msg.document, "thumbs", None):
+        msg_thumb = msg.document.thumbs[0]
+
+    if msg_thumb:
+        return await app.download_media(msg_thumb.file_id)
     return None
         
 async def chk_user(message, user_id):
@@ -238,7 +240,7 @@ async def progress_callback(current, total, progress_message):
     if current_time - last_update_time >= 10 or percent % 10 == 0:
         completed_blocks = int(percent // 10)
         remaining_blocks = 10 - completed_blocks
-        progress_bar = "♦" * completed_blocks + "◇" * remaining_blocks
+        progress_bar = "×" * completed_blocks + "=" * remaining_blocks
         current_mb = current / (1024 * 1024)  
         total_mb = total / (1024 * 1024)      
         await progress_message.edit(
