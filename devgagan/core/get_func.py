@@ -151,8 +151,9 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
             else: 
                 try:
                     thumb_path = await app.download_media(msg.document.thumbs[0].file_id)
-                except 
+                except Exception as e:
                     thumb_path = await app.download_media(msg.video.thumbs[0].file_id)
+                    print("Telethon upload.... file format is not document, try to extract thumbnail in video format")
 
             await gf.send_file(
                 target_chat_id,
