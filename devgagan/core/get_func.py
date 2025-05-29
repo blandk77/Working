@@ -92,8 +92,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                     progress=progress_bar,
                     progress_args=("╭─────────────────────╮\n│      **__Pyro Uploader__**\n├─────────────────────", edit, time.time())
                 )
-                await dm.copy(LOG_GROUP)
-                
+                await app.forward_messages(LOG_GROUP,update.message.chat.id,sent_message.id)
             elif file.split('.')[-1].lower() in image_formats:
                 dm = await app.send_photo(
                     chat_id=target_chat_id,
@@ -104,7 +103,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                     reply_to_message_id=topic_id,
                     progress_args=("╭─────────────────────╮\n│      **__Pyro Uploader__**\n├─────────────────────", edit, time.time())
                 )
-                await dm.copy(LOG_GROUP)
+                await app.forward_messages(LOG_GROUP,update.message.chat.id,sent_message.id)
             else:
                 dm = await app.send_document(
                     chat_id=target_chat_id,
@@ -117,7 +116,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                     progress_args=("╭─────────────────────╮\n│      **__Pyro Uploader__**\n├─────────────────────", edit, time.time())
                 )
                 await asyncio.sleep(2)
-                await dm.copy(LOG_GROUP)
+                await app.forward_messages(LOG_GROUP,update.message.chat.id,sent_message.id)
 
         # Telethon upload
         elif upload_method == "Telethon":
@@ -159,6 +158,8 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                 parse_mode='html',
                 thumb=thumb_path
             )
+
+    
 
     except Exception as e:
         await app.send_message(LOG_GROUP, f"**Upload Failed:** {str(e)}")
@@ -601,7 +602,6 @@ async def send_settings_message(chat_id, user_id):
         [Button.inline("Remove Words", b'delete'), Button.inline("Upload Method", b'uploadmethod')],
         [Button.inline("Session Login", b'addsession'), Button.inline("Logout", b'logout')],
         [Button.inline("Set Thumbnail", b'setthumb'), Button.inline("Remove Thumbnail", b'remthumb')],
-        [Button.inline("PDF Wtmrk", b'pdfwt'), Button.inline("Video Wtmrk", b'watermark')],
         [Button.inline("Reset Saved settings", b'reset')]
     ]
 
@@ -759,7 +759,7 @@ async def handle_user_input(event):
                 user_chat_ids[user_id] = chat_id
                 await event.respond("Chat ID set successfully!")
             except ValueError:
-                await event.respond("Invalid chat ID!")
+                await event.respond("Invalid chat ID! Chat id must start with -100")
                 
         elif session_type == 'setrename':
             custom_rename_tag = event.text
