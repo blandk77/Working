@@ -9,27 +9,6 @@ from pyrogram.errors import FloodWait, InviteHashInvalid, InviteHashExpired, Use
 from datetime import datetime as dt
 import asyncio, subprocess, re, os, time
 
-async def get_thumbnail_path(user_id, msg, app):
-    """
-    Returns the thumbnail path for a given user and message.
-    Checks for a custom thumbnail first; if not found, tries to extract the original video/document thumbnail.
-    Returns None if no thumbnail is available.
-    """
-    custom_thumb_path = f"{user_id}.jpg"
-    if os.path.exists(custom_thumb_path):
-        return custom_thumb_path
-
-    msg_thumb = None
-
-    # Try to extract thumbnail from video first, then document
-    if hasattr(msg, "video") and getattr(msg.video, "thumbs", None):
-        msg_thumb = msg.video.thumbs[0]
-    elif hasattr(msg, "document") and getattr(msg.document, "thumbs", None):
-        msg_thumb = msg.document.thumbs[0]
-
-    if msg_thumb:
-        return await app.download_media(msg_thumb.file_id)
-    return None
         
 async def chk_user(message, user_id):
     user = await premium_users()
@@ -212,25 +191,33 @@ def video_metadata(file):
 def hhmmss(seconds):
     return time.strftime('%H:%M:%S',time.gmtime(seconds))
 
-async def screenshot(video, duration, sender, client):
-    thumbnail_path = f'{sender}.jpg'
-    if os.path.exists(thumbnail_path):
-        return thumbnail_path
-    out = datetime.now().isoformat("_", "seconds").replace(":", "_") + ".jpg"
-    try:
-        if not video.thumbs or len(video.thumbs) == 0:
-            await client.send_message(sender, "No thumbnail available for this video.")
-            return None
-        thumbnail = video.thumbs[0]
-        file_path = await client.download_media(thumbnail, file_name=out)
-        if os.path.isfile(file_path):
-            return file_path
-        else:
-            await client.send_message(sender, "Failed to download thumbnail.")
-            return None
-    except Exception as e:
-        await client.send_message(sender, f"Error extracting thumbnail: {str(e)}")
-        return None
+async def screenshot(video, duration, sender):
+    if os.path.exists(f'{sender}.jpg'):
+        return f'{sender}.jpg'
+    time_stamp = hhmmss(int(duration)/2)
+    out = dt.now().isoformat("_", "seconds") + ".jpg"
+    cmd = ["ffmpeg",
+           "-ss",
+           f"{time_stamp}", 
+           "-i",
+           f"{video}",
+           "-frames:v",
+           "1", 
+           f"{out}",
+           "-y"
+          ]
+    process = await asyncio.create_subprocess_exec(
+        *cmd,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE
+    )
+    stdout, stderr = await process.communicate()
+    x = stderr.decode().strip()
+    y = stdout.decode().strip()
+    if os.path.isfile(out):
+        return out
+    else:
+        None  
 
 async def progress_callback(current, total, progress_message):
     percent = (current / total) * 100
