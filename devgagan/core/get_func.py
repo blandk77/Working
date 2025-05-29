@@ -68,7 +68,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
         metadata = video_metadata(file)
         width, height, duration = metadata['width'], metadata['height'], metadata['duration']
         try:
-            thumb_path = await get_thumbnail_path(sender, msg, app)
+            thumb_path = await screenshot(file, duration, sender)
         except Exception:
             thumb_path = None
 
