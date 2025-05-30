@@ -48,27 +48,29 @@ async def token_handler(client, message):
     join = await subscribe(client, message)
     if join == 1:
         return
-    chat_id = "save_restricted_content_bots"
-    msg = await app.get_messages(chat_id, 796)
-    user_id = message.chat.id
-    if len(message.command) <= 1:
-        image_url = "https://files.catbox.moe/er033v.jpg"
-        join_button = InlineKeyboardButton("Join Channel", url=f"https://t.me/{UPDATES}")
-        premium = InlineKeyboardButton("Get Premium", url=f"https://t.me/{OWNER}")   
-        keyboard = InlineKeyboardMarkup([
-            [join_button],   
-            [premium]    
-        ])
-         
-        await message.reply_photo(
-            msg.photo.file_id,
-            caption=(
-                "𝑯𝒆𝒚!...... \n\n📌 𝑾𝒂𝒏𝒏𝒂 𝒌𝒏𝒐𝒘 𝒂𝒃𝒐𝒖𝒕 𝒎𝒆? 𝑰𝒎 𝒂𝒏 𝒂𝒅𝒗𝒂𝒏𝒄𝒆 𝒓𝒆𝒔𝒕𝒓𝒊𝒄𝒕𝒆𝒅 𝑪𝒐𝒏𝒕𝒆𝒏𝒕 𝑺𝒂𝒗𝒆𝒓 𝒃𝒐𝒕 𝒘𝒊𝒕𝒉 𝒂 𝒇𝒂𝒔𝒕 𝒔𝒑𝒆𝒆𝒅!\n📌 𝑾𝒂𝒏𝒏𝒂 𝒌𝒏𝒐𝒘 𝒂𝒃𝒐𝒖𝒕 𝒎𝒚 𝒄𝒐𝒎𝒎𝒂𝒏𝒅𝒔? 𝑼𝒔𝒆 /help 𝒕𝒐 𝒇𝒊𝒏𝒅 𝒕𝒉𝒆𝒎 𝒐𝒖𝒕!"
-            ),
-            reply_markup=keyboard
-        )
-        return  
- 
+
+    # Define your inline keyboard buttons
+    join_button = InlineKeyboardButton("Join Channel", url=f"https://t.me/{UPDATES}")
+    premium_button = InlineKeyboardButton("Get Premium", url=f"https://t.me/{OWNER}")
+    keyboard = InlineKeyboardMarkup([
+        [join_button],
+        [premium_button]
+    ])
+
+    # Your message text
+    text = (
+        "𝑯𝒆𝒚!...... \n\n"
+        "📌 𝑾𝒂𝒏𝒏𝒂 𝒌𝒏𝒐𝒘 𝒂𝒃𝒐𝒖𝒕 𝒎𝒆? 𝑰𝒎 𝒂𝒏 𝒂𝒅𝒗𝒂𝒏𝒄𝒆 𝒓𝒆𝒔𝒕𝒓𝒊𝒄𝒕𝒆𝒅 𝑪𝒐𝒏𝒕𝒆𝒏𝒕 𝑺𝒂𝒗𝒆𝒓 𝒃𝒐𝒕 𝒘𝒊𝒕𝒉 𝒂 𝒇𝒂𝒔𝒕 𝒔𝒑𝒆𝒆𝒅!\n"
+        "📌 𝑾𝒂𝒏𝒏𝒂 𝒌𝒏𝒐𝒘 𝒂𝒃𝒐𝒖𝒕 𝒎𝒚 𝒄𝒐𝒎𝒎𝒂𝒏𝒅𝒔? 𝑼𝒔𝒆 /help 𝒕𝒐 𝒇𝒊𝒏𝒅 𝒕𝒉𝒆𝒎 𝒐𝒖𝒕!"
+    )
+
+    # Send just the text with the keyboard
+    await message.reply(
+        text,
+        reply_markup=keyboard
+)
+    return
+    
     param = message.command[1] if len(message.command) > 1 else None
     freecheck = await chk_user(message, user_id)
     if freecheck != 1:
