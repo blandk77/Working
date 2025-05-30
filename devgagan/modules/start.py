@@ -27,8 +27,6 @@ async def set(_, message):
         BotCommand("logout", "Delete your account access in the bot 🌄"),
         BotCommand("plan", "Check our premium plans 🤑"),
         BotCommand("terms", "Terms and conditions 📜"),
-        BotCommand("pay", "Buy subscription 🚀"),
-        BotCommand("status", "⟳ Refresh Payment status"),
         BotCommand("transfer", "💘 Gift premium to others (Only if you have bot premium)"),
         BotCommand("myplan", "⌛ Get your plan details"),
         BotCommand("session", "🧵 Generate Pyrogramv2 session"),
@@ -47,52 +45,12 @@ async def set(_, message):
  
  
 help_pages = [
+ (
+  "Usᴇʀ ᴄᴏᴍᴍᴀɴᴅs:\n\n__/login__\n**» Log into the bot for private channel access 🌄**\n\n__/batch__\n**» Bulk extraction for posts (after login) ⚡**\n\n__/logout__\n**» Logout from the bot 🌅**\n\n__/plan__\n**» Check available premium plans 💰😁**\n\n__/terms__\n**» View terms 📜 and conditions ©️**\n\n__/cancel__\n**» Cancel ongoing batch process 🔚**\n\n__/myplan__\n**» Get details about your plan expiry date 🌹**\n\n__/transfer userID__\n**» Transfer premium to another user 🔄 (Premium Users Only)**\n\n__/session__\n**» Generate Pyrogram V2 session 🧵**\n\n__/settings__\n» **Advanced customization ⚙️ (See usage below 👇)**\n\n__**Settings usage:**__\n📌 `SETCHATID` : __Direct uploads to channel/group/user with -100[chatID]__\n📌 `SETRENAME` : __Add custom rename tag or channel username__\n📌 `CAPTION` : __Add a custom caption to uploads__\n📌 `REPLACEWORDS` : __Replace specific words in your content__\n**Etc....**"
+
+ )
     (
-        "📝 **Bot Commands Overview (1/2)**:\n\n"
-        "1. **/add userID**\n"
-        "> Add user to premium (Owner only)\n\n"
-        "2. **/rem userID**\n"
-        "> Remove user from premium (Owner only)\n\n"
-        "3. **/transfer userID**\n"
-        "> Transfer premium to your beloved major purpose for resellers (Premium members only)\n\n"
-        "4. **/get**\n"
-        "> Get all user IDs (Owner only)\n\n"
-        "5. **/lock**\n"
-        "> Lock channel from extraction (Owner only)\n\n"
-        "6. **/dl link**\n"
-        "> Download videos (Not available in v3 if you are using)\n\n"
-        "7. **/adl link**\n"
-        "> Download audio (Not available in v3 if you are using)\n\n"
-        "8. **/login**\n"
-        "> Log into the bot for private channel access\n\n"
-        "9. **/batch**\n"
-        "> Bulk extraction for posts (After login)\n\n"
-    ),
-    (
-        "📝 **Bot Commands Overview (2/2)**:\n\n"
-        "10. **/logout**\n"
-        "> Logout from the bot\n\n"
-        "11. **/stats**\n"
-        "> Get bot stats\n\n"
-        "12. **/plan**\n"
-        "> Check premium plans\n\n"
-        "13. **/speedtest**\n"
-        "> Test the server speed (not available in v3)\n\n"
-        "14. **/terms**\n"
-        "> Terms and conditions\n\n"
-        "15. **/cancel**\n"
-        "> Cancel ongoing batch process\n\n"
-        "16. **/myplan**\n"
-        "> Get details about your plans\n\n"
-        "17. **/session**\n"
-        "> Generate Pyrogram V2 session\n\n"
-        "18. **/settings**\n"
-        "> 1. SETCHATID : To directly upload in channel or group or user's dm use it with -100[chatID]\n"
-        "> 2. SETRENAME : To add custom rename tag or username of your channels\n"
-        "> 3. CAPTION : To add custom caption\n"
-        "> 4. REPLACEWORDS : Can be used for words in deleted set via REMOVE WORDS\n"
-        "> 5. RESET : To set the things back to default\n\n"
-        "> You can set CUSTOM THUMBNAIL, PDF WATERMARK, VIDEO WATERMARK, SESSION-based login, etc. from settings\n\n"
+        "𝑂𝑤𝑛𝑒𝑟 𝐶𝑜𝑚𝑚𝑎𝑛𝑑𝑠:\n\n__/add userID__\n**» Add a user to premium (__Owner only__)**\n\n__/rem userID__\n\n**» Remove a user from premium (__Owner only__)**\n\n__/get__\n**» Get all user IDs (__Owner only__)**\n\n__/lock Channel_id__\n**» Lock a channel from extraction (__Owner only__)**\n\n__/stats__\n**» Get bot statistics (__Owner only__)**\n\n__/speedtest__\n**» Test the server speed (__Owner only__)**"
     )
 ]
  
@@ -102,8 +60,8 @@ async def send_or_edit_help_page(_, message, page_number):
         return
  
      
-    prev_button = InlineKeyboardButton("◀️ Previous", callback_data=f"help_prev_{page_number}")
-    next_button = InlineKeyboardButton("Next ▶️", callback_data=f"help_next_{page_number}")
+    prev_button = InlineKeyboardButton("Usᴇʀ ᴄᴏᴍᴍᴀɴᴅs", callback_data=f"help_prev_{page_number}")
+    next_button = InlineKeyboardButton("𝑂𝑤𝑛𝑒𝑟 𝐶𝑜𝑚𝑚𝑎𝑛𝑑𝑠", callback_data=f"help_next_{page_number}")
  
      
     buttons = []
