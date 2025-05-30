@@ -45,10 +45,10 @@ async def set(_, message):
  
  
 help_pages = [
- (
-  "Usᴇʀ ᴄᴏᴍᴍᴀɴᴅs:\n\n__/login__\n**» Log into the bot for private channel access 🌄**\n\n__/batch__\n**» Bulk extraction for posts (after login) ⚡**\n\n__/logout__\n**» Logout from the bot 🌅**\n\n__/plan__\n**» Check available premium plans 💰😁**\n\n__/terms__\n**» View terms 📜 and conditions ©️**\n\n__/cancel__\n**» Cancel ongoing batch process 🔚**\n\n__/myplan__\n**» Get details about your plan expiry date 🌹**\n\n__/transfer userID__\n**» Transfer premium to another user 🔄 (Premium Users Only)**\n\n__/session__\n**» Generate Pyrogram V2 session 🧵**\n\n__/settings__\n» **Advanced customization ⚙️ (See usage below 👇)**\n\n__**Settings usage:**__\n📌 `SETCHATID` : __Direct uploads to channel/group/user with -100[chatID]__\n📌 `SETRENAME` : __Add custom rename tag or channel username__\n📌 `CAPTION` : __Add a custom caption to uploads__\n📌 `REPLACEWORDS` : __Replace specific words in your content__\n**Etc....**"
+    (
+        "Usᴇʀ ᴄᴏᴍᴍᴀɴᴅs:\n\n__/login__\n**» Log into the bot for private channel access 🌄**\n\n__/batch__\n**» Bulk extraction for posts (after login) ⚡**\n\n__/logout__\n**» Logout from the bot 🌅**\n\n__/plan__\n**» Check available premium plans 💰😁**\n\n__/terms__\n**» View terms 📜 and conditions ©️**\n\n__/cancel__\n**» Cancel ongoing batch process 🔚**\n\n__/myplan__\n**» Get details about your plan expiry date 🌹**\n\n__/transfer userID__\n**» Transfer premium to another user 🔄 (Premium Users Only)**\n\n__/session__\n**» Generate Pyrogram V2 session 🧵**\n\n__/settings__\n» **Advanced customization ⚙️ (See usage below 👇)**\n\n__**Settings usage:**__\n📌 `SETCHATID` : __Direct uploads to channel/group/user with -100[chatID]__\n📌 `SETRENAME` : __Add custom rename tag or channel username__\n📌 `CAPTION` : __Add a custom caption to uploads__\n📌 `REPLACEWORDS` : __Replace specific words in your content__\n**Etc....**"
 
- )
+    ),
     (
         "𝑂𝑤𝑛𝑒𝑟 𝐶𝑜𝑚𝑚𝑎𝑛𝑑𝑠:\n\n__/add userID__\n**» Add a user to premium (__Owner only__)**\n\n__/rem userID__\n\n**» Remove a user from premium (__Owner only__)**\n\n__/get__\n**» Get all user IDs (__Owner only__)**\n\n__/lock Channel_id__\n**» Lock a channel from extraction (__Owner only__)**\n\n__/stats__\n**» Get bot statistics (__Owner only__)**\n\n__/speedtest__\n**» Test the server speed (__Owner only__)**"
     )
