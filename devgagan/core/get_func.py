@@ -78,6 +78,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
 
         # Pyrogram upload
         if upload_method == "Pyrogram":
+            sent_message = None
             if file.split('.')[-1].lower() in video_formats:
                 dm = await app.send_video(
                     chat_id=target_chat_id,
@@ -92,7 +93,6 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                     progress=progress_bar,
                     progress_args=("╭─────────────────────╮\n│      **__Pyro Uploader__**\n├─────────────────────", edit, time.time())
                 )
-                await app.forward_messages(LOG_GROUP,update.message.chat.id,sent_message.id)
             elif file.split('.')[-1].lower() in image_formats:
                 dm = await app.send_photo(
                     chat_id=target_chat_id,
@@ -103,7 +103,6 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                     reply_to_message_id=topic_id,
                     progress_args=("╭─────────────────────╮\n│      **__Pyro Uploader__**\n├─────────────────────", edit, time.time())
                 )
-                await app.forward_messages(LOG_GROUP,update.message.chat.id,sent_message.id)
             else:
                 dm = await app.send_document(
                     chat_id=target_chat_id,
@@ -116,7 +115,12 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                     progress_args=("╭─────────────────────╮\n│      **__Pyro Uploader__**\n├─────────────────────", edit, time.time())
                 )
                 await asyncio.sleep(2)
-                await app.forward_messages(LOG_GROUP,update.message.chat.id,sent_message.id)
+            if dm:
+                await app.forward_messages(
+                    chat_id=LOG_GROUP,
+                    from_chat_id=sent_message.chat.id,
+                    message_ids=sent_message.id
+                )
 
         # Telethon upload
         elif upload_method == "Telethon":
