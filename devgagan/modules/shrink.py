@@ -69,7 +69,7 @@ async def token_handler(client, message):
         text,
         reply_markup=keyboard
 )
-    return
+ return
     
     param = message.command[1] if len(message.command) > 1 else None
     freecheck = await chk_user(message, user_id)
