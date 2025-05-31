@@ -78,7 +78,6 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
 
         # Pyrogram upload
         if upload_method == "Pyrogram":
-            sent_message = None
             if file.split('.')[-1].lower() in video_formats:
                 dm = await app.send_video(
                     chat_id=target_chat_id,
@@ -116,11 +115,7 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
                 )
                 await asyncio.sleep(2)
             if dm:
-                await app.forward_messages(
-                    chat_id=LOG_GROUP,
-                    from_chat_id=sent_message.chat.id,
-                    message_ids=sent_message.id
-                )
+                print("Uploaded file in Pyrogram mode, Trying to forward in logs channel")
 
         # Telethon upload
         elif upload_method == "Telethon":
@@ -170,6 +165,11 @@ async def upload_media(sender, target_chat_id, file, caption, edit, topic_id):
         print(f"Error during media upload: {e}")
 
     finally:
+        await app.forward_messages(
+            chat_id=LOG_GROUP,
+            from_chat_id=sent_message.chat.id,
+            message_ids=sent_message.id
+        )
         if thumb_path and os.path.exists(thumb_path):
             if os.path.basename(thumb_path) != f"{sender}.jpg":  # Check if the filename is not {sender}.jpg
                 os.remove(thumb_path)
